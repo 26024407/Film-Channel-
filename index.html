@@ -12,7 +12,7 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#07131c;
-  color:#fff;
+  color:white;
 }
 
 header{
@@ -21,8 +21,14 @@ header{
   background:linear-gradient(135deg,#8b0000,#170000);
 }
 
-header h1{margin:0;font-size:28px}
-header p{color:#ddd}
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+header p{
+  color:#ddd;
+}
 
 .container{
   max-width:700px;
@@ -38,7 +44,7 @@ header p{color:#ddd}
   background:#162733;
   color:white;
   outline:none;
-  margin-bottom:16px;
+  margin-bottom:15px;
 }
 
 .categories{
@@ -50,11 +56,11 @@ header p{color:#ddd}
 
 .categories button{
   flex:none;
+  padding:9px 15px;
   border:1px solid #294554;
+  border-radius:20px;
   background:#12232e;
   color:white;
-  padding:9px 15px;
-  border-radius:20px;
 }
 
 .categories .active{
@@ -80,7 +86,9 @@ header p{color:#ddd}
   object-fit:cover;
 }
 
-.film-info{padding:10px}
+.film-info{
+  padding:10px;
+}
 
 .film h3{
   margin:0 0 7px;
@@ -103,10 +111,6 @@ header p{color:#ddd}
   font-weight:bold;
 }
 
-.pay{
-  background:#198754;
-}
-
 .empty{
   text-align:center;
   color:#aaa;
@@ -114,40 +118,63 @@ header p{color:#ddd}
   grid-column:1/-1;
 }
 
-.payment{
+/* PAYMENT */
+.modal{
   display:none;
   position:fixed;
   inset:0;
-  background:#07131c;
+  background:rgba(0,0,0,.85);
   z-index:2000;
-  overflow:auto;
-  padding:25px 15px;
+  padding:20px;
 }
 
 .payment-box{
-  max-width:500px;
-  margin:auto;
+  max-width:420px;
+  margin:60px auto;
   background:#12232e;
+  border:1px solid #315261;
   border-radius:18px;
   padding:20px;
 }
 
 .payment-box h2{
-  text-align:center;
+  margin-top:0;
 }
 
 .method{
-  background:#203744;
-  border:1px solid #34515f;
   padding:15px;
   margin:10px 0;
+  border:1px solid #315261;
   border-radius:12px;
+  background:#0b1d27;
+  cursor:pointer;
 }
 
-.method button{
+.method.selected{
+  border-color:#00c853;
+  background:#123b2b;
+}
+
+.method strong{
+  display:block;
+  font-size:18px;
+}
+
+.payment-box input{
   width:100%;
-  margin-top:8px;
-  padding:11px;
+  padding:13px;
+  margin-top:10px;
+  border:0;
+  border-radius:9px;
+  background:#203744;
+  color:white;
+  outline:none;
+}
+
+.confirm{
+  width:100%;
+  padding:13px;
+  margin-top:12px;
   border:0;
   border-radius:9px;
   background:#198754;
@@ -155,25 +182,22 @@ header p{color:#ddd}
   font-weight:bold;
 }
 
-.payment input{
+.cancel{
   width:100%;
-  padding:12px;
-  margin:7px 0;
+  padding:11px;
+  margin-top:8px;
   border:0;
   border-radius:9px;
-  background:#203744;
+  background:#444;
   color:white;
 }
 
-.closePay{
-  float:right;
-  border:0;
-  border-radius:50%;
-  width:40px;
-  height:40px;
-  background:#e50914;
-  color:white;
-  font-size:20px;
+.account{
+  background:#07131c;
+  padding:12px;
+  border-radius:10px;
+  margin-top:12px;
+  font-size:14px;
 }
 
 .player{
@@ -203,28 +227,6 @@ header p{color:#ddd}
   color:white;
   font-size:22px;
 }
-
-.admin{
-  margin-top:25px;
-  padding:15px;
-  background:#12232e;
-  border-radius:14px;
-}
-
-.admin button{
-  width:100%;
-  padding:11px;
-  margin-top:8px;
-  border:0;
-  border-radius:9px;
-  background:#555;
-  color:white;
-}
-
-@media(max-width:420px){
-  .films{grid-template-columns:repeat(2,1fr)}
-  .film img{height:130px}
-}
 </style>
 </head>
 
@@ -240,6 +242,7 @@ header p{color:#ddd}
 <input
   id="search"
   class="search"
+  type="text"
   placeholder="🔎 ፊልም ፈልግ..."
   oninput="searchFilms()"
 >
@@ -256,71 +259,84 @@ header p{color:#ddd}
 
 <div id="films" class="films"></div>
 
-<div class="admin">
-  <h3>🔐 Admin</h3>
-  <p>ይህ ክፍል ለፊልም መጨመር ነው።</p>
-
-  <input id="title" placeholder="የፊልሙ ስም">
-  <input id="image" placeholder="የፎቶ ሊንክ">
-  <input id="video" placeholder="YouTube Video ID">
-
-  <button onclick="addFilm()">➕ ፊልም ጨምር</button>
-</div>
-
 </main>
 
-<!-- PAYMENT -->
-<div id="payment" class="payment">
+<!-- PAYMENT MODAL -->
 
-<div class="payment-box">
+<div id="paymentModal" class="modal">
 
-<button class="closePay" onclick="closePayment()">×</button>
+  <div class="payment-box">
 
-<h2>💳 ፊልሙን ለማየት ክፈል</h2>
+    <h2>🔐 ፊልሙን ለማየት ክፈል</h2>
 
-<p id="selectedMovie"></p>
+    <p id="selectedFilm"></p>
 
-<div class="method">
-<b>🏦 CBE / ንግድ ባንክ</b>
-<p>ዋጋ: <strong>20 ብር</strong></p>
-<p>የክፍያ ሂሳብ:</p>
-<strong>1000341152864</strong>
+    <div
+      class="method"
+      id="cbeMethod"
+      onclick="selectMethod('CBE')">
+
+      <strong>🏦 CBE</strong>
+      20 ብር
+
+    </div>
+
+    <div
+      class="method"
+      id="telebirrMethod"
+      onclick="selectMethod('Telebirr')">
+
+      <strong>📱 Telebirr</strong>
+      15 ብር
+
+    </div>
+
+    <div id="accountInfo" class="account">
+      የክፍያ ዘዴ ይምረጡ
+    </div>
+
+    <input
+      id="transaction"
+      placeholder="Transaction ID ያስገቡ"
+    >
+
+    <button
+      class="confirm"
+      onclick="submitPayment()">
+
+      ✅ ክፍያ ላክ
+
+    </button>
+
+    <button
+      class="cancel"
+      onclick="closePayment()">
+
+      ተመለስ
+
+    </button>
+
+  </div>
+
 </div>
 
-<div class="method">
-<b>📱 Telebirr</b>
-<p>ዋጋ: <strong>15 ብር</strong></p>
-<p>የክፍያ ቁጥር:</p>
-<strong>+251926024407</strong>
-</div>
+<!-- VIDEO PLAYER -->
 
-<h3>🧾 የክፍያ ማስረጃ</h3>
-
-<input id="payerName" placeholder="ስም">
-
-<input id="transactionId"
-       placeholder="Transaction ID / Reference">
-
-<button class="pay"
-        onclick="submitPayment()">
-📤 ክፍያ ማስረጃ ላክ
-</button>
-
-<p id="paymentStatus"></p>
-
-</div>
-</div>
-
-<!-- PLAYER -->
 <div id="player" class="player">
 
-<button class="close" onclick="closePlayer()">×</button>
+  <button
+    class="close"
+    onclick="closePlayer()">
 
-<iframe
-  id="videoFrame"
-  allowfullscreen
-  allow="autoplay; encrypted-media">
-</iframe>
+    ×
+
+  </button>
+
+  <iframe
+    id="videoFrame"
+    allowfullscreen
+    allow="autoplay; encrypted-media">
+  </iframe>
 
 </div>
 
@@ -328,198 +344,234 @@ header p{color:#ddd}
 
 let films = [
 
-{
-  title:"Example Film 1",
-  image:"https://picsum.photos/500/300?random=1",
-  video:"dQw4w9WgXcQ",
-  priceCBE:20,
-  priceTelebirr:15
-},
+  {
+    title:"Example Film 1",
+    image:"https://picsum.photos/500/300?random=1",
+    video:"dQw4w9WgXcQ"
+  },
 
-{
-  title:"Example Film 2",
-  image:"https://picsum.photos/500/300?random=2",
-  video:"dQw4w9WgXcQ",
-  priceCBE:20,
-  priceTelebirr:15
-}
+  {
+    title:"Example Film 2",
+    image:"https://picsum.photos/500/300?random=2",
+    video:"dQw4w9WgXcQ"
+  }
 
 ];
 
-let selectedFilm = null;
+let selectedFilmIndex = null;
+let selectedMethod = null;
+
+
+/* SHOW FILMS */
 
 function showFilms(list=films){
 
-const box=document.getElementById("films");
+  const box=document.getElementById("films");
 
-box.innerHTML="";
+  box.innerHTML="";
 
-if(list.length===0){
+  if(list.length===0){
 
-box.innerHTML=
-'<div class="empty">ፊልም አልተገኘም 😔</div>';
+    box.innerHTML=
+      '<div class="empty">ፊልም አልተገኘም 😔</div>';
 
-return;
+    return;
+  }
 
-}
+  list.forEach((film,index)=>{
 
-list.forEach((film,index)=>{
+    box.innerHTML += `
 
-box.innerHTML += `
+      <div class="film">
 
-<div class="film">
+        <img
+          src="${film.image}"
+          alt="${film.title}"
+        >
 
-<img
-src="${film.image}"
-alt="${film.title}"
-onerror="this.src='https://picsum.photos/500/300'"
->
+        <div class="film-info">
 
-<div class="film-info">
+          <h3>${film.title}</h3>
 
-<h3>${film.title}</h3>
+          <div class="meta">
+            🎬 Film Channel
+          </div>
 
-<div class="meta">
-🎬 Film Channel
-</div>
+          <button
+            class="watch"
+            onclick="openPayment(${index})">
 
-<button
-class="watch"
-onclick="openPayment(${index})">
+            🔒 ለማየት ክፈል
 
-🔒 ለማየት ክፈል
+          </button>
 
-</button>
+        </div>
 
-</div>
+      </div>
 
-</div>
+    `;
 
-`;
-
-});
+  });
 
 }
+
+
+/* OPEN PAYMENT */
 
 function openPayment(index){
 
-selectedFilm=films[index];
+  selectedFilmIndex=index;
 
-document.getElementById("selectedMovie").innerHTML=
-"🎬 <b>"+selectedFilm.title+"</b>";
+  selectedMethod=null;
 
-document.getElementById("payment").style.display="block";
+  document.getElementById("selectedFilm").innerText =
+    "🎬 " + films[index].title;
 
-document.getElementById("paymentStatus").innerText="";
+  document.getElementById("paymentModal").style.display="block";
+
+  document.getElementById("cbeMethod")
+    .classList.remove("selected");
+
+  document.getElementById("telebirrMethod")
+    .classList.remove("selected");
+
+  document.getElementById("accountInfo").innerText =
+    "የክፍያ ዘዴ ይምረጡ";
+
+  document.getElementById("transaction").value="";
+}
+
+
+/* SELECT PAYMENT */
+
+function selectMethod(method){
+
+  selectedMethod=method;
+
+  document.getElementById("cbeMethod")
+    .classList.remove("selected");
+
+  document.getElementById("telebirrMethod")
+    .classList.remove("selected");
+
+  if(method==="CBE"){
+
+    document.getElementById("cbeMethod")
+      .classList.add("selected");
+
+    document.getElementById("accountInfo").innerHTML =
+      "🏦 CBE<br><br>" +
+      "<strong>1000341152864</strong><br><br>" +
+      "💰 20 ብር";
+
+  }
+
+  if(method==="Telebirr"){
+
+    document.getElementById("telebirrMethod")
+      .classList.add("selected");
+
+    document.getElementById("accountInfo").innerHTML =
+      "📱 Telebirr<br><br>" +
+      "<strong>+251926024407</strong><br><br>" +
+      "💰 15 ብር";
+
+  }
 
 }
 
-function closePayment(){
 
-document.getElementById("payment").style.display="none";
-
-}
+/* SUBMIT PAYMENT */
 
 function submitPayment(){
 
-const name=
-document.getElementById("payerName").value.trim();
+  if(!selectedMethod){
 
-const transaction=
-document.getElementById("transactionId").value.trim();
+    alert("እባክዎ CBE ወይም Telebirr ይምረጡ");
 
-if(!name || !transaction){
+    return;
+  }
 
-alert("ስም እና Transaction ID ያስገቡ");
+  const transaction =
+    document.getElementById("transaction")
+    .value
+    .trim();
 
-return;
+  if(!transaction){
+
+    alert("እባክዎ Transaction ID ያስገቡ");
+
+    return;
+  }
+
+  alert(
+    "ክፍያዎ ተልኳል ✅\n\n" +
+    "የክፍያ ዘዴ: " +
+    selectedMethod +
+    "\n\n" +
+    "Transaction ID: " +
+    transaction +
+    "\n\n" +
+    "Admin እስኪያረጋግጥ ይጠብቁ።"
+  );
+
+  closePayment();
+
+}
+
+
+/* CLOSE PAYMENT */
+
+function closePayment(){
+
+  document.getElementById("paymentModal")
+    .style.display="none";
 
 }
 
-document.getElementById("paymentStatus").innerHTML=
-"⏳ ክፍያዎ ለማረጋገጥ ተልኳል።<br>Admin ካረጋገጠ በኋላ ፊልሙ ይከፈታል።";
 
-}
-
-function watchFilm(index){
-
-const film=films[index];
-
-document.getElementById("videoFrame").src=
-"https://www.youtube.com/embed/"
-+film.video+
-"?autoplay=1";
-
-document.getElementById("player").style.display="block";
-
-}
-
-function closePlayer(){
-
-document.getElementById("videoFrame").src="";
-
-document.getElementById("player").style.display="none";
-
-}
+/* SEARCH */
 
 function searchFilms(){
 
-const text=
-document.getElementById("search")
-.value
-.toLowerCase();
+  const text =
+    document.getElementById("search")
+    .value
+    .toLowerCase();
 
-const result=films.filter(f =>
-f.title.toLowerCase().includes(text)
-);
+  const result=films.filter(f =>
+    f.title.toLowerCase().includes(text)
+  );
 
-showFilms(result);
-
-}
-
-function addFilm(){
-
-const title=
-document.getElementById("title").value.trim();
-
-const image=
-document.getElementById("image").value.trim();
-
-const video=
-document.getElementById("video").value.trim();
-
-if(!title || !video){
-
-alert("የፊልሙን ስም እና YouTube Video ID ያስገቡ");
-
-return;
+  showFilms(result);
 
 }
 
-films.push({
 
-title:title,
+/* PLAYER */
 
-image:image ||
-"https://picsum.photos/500/300",
+function watchFilm(index){
 
-video:video,
+  const film=films[index];
 
-priceCBE:20,
+  document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/" +
+    film.video +
+    "?autoplay=1";
 
-priceTelebirr:15
-
-});
-
-document.getElementById("title").value="";
-document.getElementById("image").value="";
-document.getElementById("video").value="";
-
-showFilms();
-
-alert("ፊልሙ ተጨምሯል ✅");
+  document.getElementById("player").style.display="block";
 
 }
+
+
+function closePlayer(){
+
+  document.getElementById("videoFrame").src="";
+
+  document.getElementById("player").style.display="none";
+
+}
+
 
 showFilms();
 
