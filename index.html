@@ -12,7 +12,7 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#07131c;
-  color:white;
+  color:#fff;
 }
 
 header{
@@ -32,21 +32,42 @@ header p{
 }
 
 .container{
-  padding:16px;
   max-width:700px;
   margin:auto;
+  padding:16px 14px 80px;
 }
 
 .search{
   width:100%;
   padding:14px;
   border:0;
-  outline:none;
   border-radius:12px;
+  outline:none;
   background:#162733;
-  color:white;
-  font-size:16px;
-  margin-bottom:15px;
+  color:#fff;
+  font-size:15px;
+  margin-bottom:16px;
+}
+
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  margin-bottom:18px;
+}
+
+.categories button{
+  flex:none;
+  border:1px solid #294554;
+  background:#12232e;
+  color:#fff;
+  padding:9px 15px;
+  border-radius:20px;
+}
+
+.categories button.active{
+  background:#e50914;
+  border-color:#e50914;
 }
 
 .films{
@@ -74,14 +95,20 @@ header p{
 }
 
 .film h3{
-  margin:0 0 8px;
+  margin:0 0 7px;
   font-size:16px;
+}
+
+.meta{
+  color:#9fb2ba;
+  font-size:12px;
 }
 
 .watch{
   width:100%;
-  border:0;
+  margin-top:10px;
   padding:10px;
+  border:0;
   border-radius:9px;
   background:#e50914;
   color:white;
@@ -93,6 +120,40 @@ header p{
   color:#aaa;
   padding:30px;
   grid-column:1/-1;
+}
+
+.add-box{
+  margin-top:22px;
+  padding:15px;
+  background:#12232e;
+  border-radius:14px;
+}
+
+.add-box h2{
+  margin-top:0;
+  font-size:18px;
+}
+
+.add-box input{
+  width:100%;
+  padding:12px;
+  margin:5px 0;
+  border:0;
+  border-radius:9px;
+  background:#203744;
+  color:white;
+  outline:none;
+}
+
+.add-box button{
+  width:100%;
+  padding:12px;
+  margin-top:7px;
+  border:0;
+  border-radius:9px;
+  background:#198754;
+  color:white;
+  font-weight:bold;
 }
 
 .player{
@@ -123,36 +184,14 @@ header p{
   font-size:22px;
 }
 
-.add-box{
-  margin-top:20px;
-  padding:15px;
-  background:#12232e;
-  border-radius:14px;
-}
+@media(max-width:420px){
+  .films{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-.add-box h2{
-  font-size:18px;
-}
-
-.add-box input{
-  width:100%;
-  padding:12px;
-  margin:5px 0;
-  border:0;
-  border-radius:9px;
-  background:#203744;
-  color:white;
-}
-
-.add-box button{
-  width:100%;
-  padding:12px;
-  margin-top:7px;
-  border:0;
-  border-radius:9px;
-  background:#198754;
-  color:white;
-  font-weight:bold;
+  .film img{
+    height:130px;
+  }
 }
 </style>
 </head>
@@ -164,7 +203,7 @@ header p{
   <p>ፊልሞችን በቀላሉ ይመልከቱ</p>
 </header>
 
-<div class="container">
+<main class="container">
 
 <input
   id="search"
@@ -174,6 +213,16 @@ header p{
   oninput="searchFilms()"
 >
 
+<div class="categories">
+  <button class="active">ሁሉም</button>
+  <button>Action</button>
+  <button>Drama</button>
+  <button>Comedy</button>
+  <button>Series</button>
+</div>
+
+<h2>🔥 ፊልሞች</h2>
+
 <div id="films" class="films"></div>
 
 <div class="add-box">
@@ -181,22 +230,22 @@ header p{
 
   <input id="title" placeholder="የፊልሙ ስም">
 
-  <input id="image"
-         placeholder="የፎቶ ሊንክ">
+  <input id="image" placeholder="የፎቶ ሊንክ">
 
-  <input id="video"
-         placeholder="YouTube Video ID">
+  <input id="video" placeholder="YouTube Video ID">
 
   <button onclick="addFilm()">ፊልም ጨምር</button>
 </div>
 
-</div>
+</main>
 
 <div id="player" class="player">
   <button class="close" onclick="closePlayer()">×</button>
-  <iframe id="videoFrame"
-          allowfullscreen
-          allow="autoplay; encrypted-media">
+
+  <iframe
+    id="videoFrame"
+    allowfullscreen
+    allow="autoplay; encrypted-media">
   </iframe>
 </div>
 
@@ -222,7 +271,7 @@ function showFilms(list=films){
   box.innerHTML="";
 
   if(list.length===0){
-    box.innerHTML='<div class="empty">ፊልም አልተገኘም</div>';
+    box.innerHTML='<div class="empty">ፊልም አልተገኘም 😔</div>';
     return;
   }
 
@@ -241,10 +290,14 @@ function showFilms(list=films){
 
           <h3>${film.title}</h3>
 
+          <div class="meta">
+            🎬 Film Channel
+          </div>
+
           <button
             class="watch"
             onclick="watchFilm(${index})">
-            ▶ ይመልከቱ
+            ▶️ ይመልከቱ
           </button>
 
         </div>
@@ -276,7 +329,7 @@ function closePlayer(){
 
 function searchFilms(){
 
-  const text=
+  const text =
     document.getElementById("search")
     .value
     .toLowerCase();
