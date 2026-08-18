@@ -343,7 +343,22 @@ header p{
 <script>
 
 let films = [
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+
+const SUPABASE_URL = "https://xzywruwngrlwhfbezymi.supabase.co";
+
+const SUPABASE_KEY = "እዚህ_PUBLISHABLE_KEY_አስገባ";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+  These API keys allow privileged access to your project's APIs. Use in servers, functions, workers or other backend components of your application.
+),
+
+  
+let films = [
   {
     title:"Example Film 1",
     image:"https://picsum.photos/500/300?random=1",
@@ -351,9 +366,7 @@ let films = [
   },
 
   {
-    title:"Example Film 2",
-    image:"https://picsum.photos/500/300?random=2",
-    video:"dQw4w9WgXcQ"
+
   }
 
 ];
