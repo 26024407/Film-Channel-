@@ -1,156 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="am">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Film Channel</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#080808;
+  background:#07131c;
   color:white;
 }
 
 header{
-  padding:20px 15px;
-  background:linear-gradient(135deg,#171717,#050505);
-  position:sticky;
-  top:0;
-  z-index:10;
+  padding:22px 16px;
+  text-align:center;
+  background:linear-gradient(135deg,#8b0000,#170000);
 }
 
-.logo{
-  font-size:25px;
-  font-weight:bold;
+header h1{
+  margin:0;
+  font-size:28px;
 }
 
-.logo span{
-  color:#e50914;
-}
-
-.search{
-  margin-top:15px;
-}
-
-.search input{
-  width:100%;
-  padding:13px;
-  border:0;
-  border-radius:10px;
-  outline:none;
-  background:#242424;
-  color:white;
+header p{
+  margin:7px 0 0;
+  color:#ddd;
 }
 
 .container{
-  padding:18px 14px 80px;
+  padding:16px;
+  max-width:700px;
+  margin:auto;
 }
 
-h2{
-  margin:10px 0 15px;
-}
-
-.categories{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-}
-
-.categories button{
-  flex:none;
-  border:1px solid #333;
-  background:#171717;
+.search{
+  width:100%;
+  padding:14px;
+  border:0;
+  outline:none;
+  border-radius:12px;
+  background:#162733;
   color:white;
-  padding:9px 15px;
-  border-radius:20px;
+  font-size:16px;
+  margin-bottom:15px;
 }
 
-.categories button.active{
-  background:#e50914;
-}
-
-.movies{
+.films{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:14px;
-  margin-top:18px;
+  gap:12px;
 }
 
-.movie{
-  background:#151515;
+.film{
+  background:#12232e;
+  border:1px solid #243d4a;
   border-radius:14px;
   overflow:hidden;
-  border:1px solid #292929;
 }
 
-.poster{
-  height:210px;
-  background:#222;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:50px;
+.film img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  display:block;
 }
 
-.info{
-  padding:11px;
+.film-info{
+  padding:10px;
 }
 
-.title{
-  font-weight:bold;
-}
-
-.meta{
-  color:#999;
-  font-size:12px;
-  margin-top:6px;
+.film h3{
+  margin:0 0 8px;
+  font-size:16px;
 }
 
 .watch{
   width:100%;
-  margin-top:10px;
-  padding:9px;
   border:0;
-  border-radius:8px;
+  padding:10px;
+  border-radius:9px;
   background:#e50914;
   color:white;
   font-weight:bold;
 }
 
-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:62px;
-  background:#111;
-  border-top:1px solid #292929;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-}
-
-nav button{
-  background:none;
-  border:0;
+.empty{
+  text-align:center;
   color:#aaa;
-  font-size:12px;
+  padding:30px;
+  grid-column:1/-1;
 }
 
-nav button.active{
+.player{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:1000;
+}
+
+.player iframe{
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+.close{
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:1001;
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#e50914;
+  color:white;
+  font-size:22px;
+}
+
+.add-box{
+  margin-top:20px;
+  padding:15px;
+  background:#12232e;
+  border-radius:14px;
+}
+
+.add-box h2{
+  font-size:18px;
+}
+
+.add-box input{
+  width:100%;
+  padding:12px;
+  margin:5px 0;
+  border:0;
+  border-radius:9px;
+  background:#203744;
   color:white;
 }
 
-.icon{
-  display:block;
-  font-size:21px;
-  margin-bottom:3px;
+.add-box button{
+  width:100%;
+  padding:12px;
+  margin-top:7px;
+  border:0;
+  border-radius:9px;
+  background:#198754;
+  color:white;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -158,147 +160,168 @@ nav button.active{
 <body>
 
 <header>
-
-<div class="logo">
-🎬 <span>FILM</span> CHANNEL
-</div>
-
-<div class="search">
-<input
-id="search"
-type="text"
-placeholder="Search movies..."
-oninput="searchMovies()">
-</div>
-
+  <h1>🎬 Film Channel</h1>
+  <p>ፊልሞችን በቀላሉ ይመልከቱ</p>
 </header>
 
-<main class="container">
+<div class="container">
 
-<h2>🔥 Trending Movies</h2>
+<input
+  id="search"
+  class="search"
+  type="text"
+  placeholder="🔎 ፊልም ፈልግ..."
+  oninput="searchFilms()"
+>
 
-<div class="categories">
+<div id="films" class="films"></div>
 
-<button class="active">All</button>
-<button>Action</button>
-<button>Drama</button>
-<button>Comedy</button>
-<button>Series</button>
+<div class="add-box">
+  <h2>➕ ፊልም ጨምር</h2>
 
-</div>
+  <input id="title" placeholder="የፊልሙ ስም">
 
-<div class="movies" id="movies">
+  <input id="image"
+         placeholder="የፎቶ ሊንክ">
 
-<div class="movie" data-title="My First Movie">
+  <input id="video"
+         placeholder="YouTube Video ID">
 
-<div class="poster">
-🎬
-</div>
-
-<div class="info">
-
-<div class="title">
-My First Movie
-</div>
-
-<div class="meta">
-2026 • Action
-</div>
-
-<button class="watch"
-onclick="watchMovie('My First Movie')">
-▶ Watch
-</button>
-
+  <button onclick="addFilm()">ፊልም ጨምር</button>
 </div>
 
 </div>
 
-
-<div class="movie" data-title="My First Series">
-
-<div class="poster">
-📺
+<div id="player" class="player">
+  <button class="close" onclick="closePlayer()">×</button>
+  <iframe id="videoFrame"
+          allowfullscreen
+          allow="autoplay; encrypted-media">
+  </iframe>
 </div>
-
-<div class="info">
-
-<div class="title">
-My First Series
-</div>
-
-<div class="meta">
-2026 • Series
-</div>
-
-<button class="watch"
-onclick="watchMovie('My First Series')">
-▶ Watch
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-<nav>
-
-<button class="active">
-<span class="icon">🏠</span>
-Home
-</button>
-
-<button>
-<span class="icon">🎬</span>
-Movies
-</button>
-
-<button>
-<span class="icon">📺</span>
-Series
-</button>
-
-<button>
-<span class="icon">⭐</span>
-Favorites
-</button>
-
-</nav>
 
 <script>
 
-function watchMovie(title){
+let films = [
+  {
+    title:"Example Film 1",
+    image:"https://picsum.photos/500/300?random=1",
+    video:"dQw4w9WgXcQ"
+  },
+  {
+    title:"Example Film 2",
+    image:"https://picsum.photos/500/300?random=2",
+    video:"dQw4w9WgXcQ"
+  }
+];
 
-alert("Opening: " + title);
+function showFilms(list=films){
 
+  const box=document.getElementById("films");
+
+  box.innerHTML="";
+
+  if(list.length===0){
+    box.innerHTML='<div class="empty">ፊልም አልተገኘም</div>';
+    return;
+  }
+
+  list.forEach((film,index)=>{
+
+    box.innerHTML += `
+      <div class="film">
+
+        <img
+          src="${film.image}"
+          alt="${film.title}"
+          onerror="this.src='https://picsum.photos/500/300'"
+        >
+
+        <div class="film-info">
+
+          <h3>${film.title}</h3>
+
+          <button
+            class="watch"
+            onclick="watchFilm(${index})">
+            ▶ ይመልከቱ
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+  });
 }
 
-function searchMovies(){
+function watchFilm(index){
 
-const text =
-document.getElementById("search")
-.value
-.toLowerCase();
+  const film=films[index];
 
-const movies =
-document.querySelectorAll(".movie");
+  document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/" +
+    film.video +
+    "?autoplay=1";
 
-movies.forEach(movie => {
-
-const title =
-movie.dataset.title.toLowerCase();
-
-movie.style.display =
-title.includes(text)
-? "block"
-: "none";
-
-});
-
+  document.getElementById("player").style.display="block";
 }
+
+function closePlayer(){
+
+  document.getElementById("videoFrame").src="";
+
+  document.getElementById("player").style.display="none";
+}
+
+function searchFilms(){
+
+  const text=
+    document.getElementById("search")
+    .value
+    .toLowerCase();
+
+  const result=films.filter(f =>
+    f.title.toLowerCase().includes(text)
+  );
+
+  showFilms(result);
+}
+
+function addFilm(){
+
+  const title=
+    document.getElementById("title").value.trim();
+
+  const image=
+    document.getElementById("image").value.trim();
+
+  const video=
+    document.getElementById("video").value.trim();
+
+  if(!title || !video){
+
+    alert("የፊልሙን ስም እና YouTube Video ID ያስገቡ");
+
+    return;
+  }
+
+  films.push({
+    title:title,
+    image:image || "https://picsum.photos/500/300",
+    video:video
+  });
+
+  document.getElementById("title").value="";
+  document.getElementById("image").value="";
+  document.getElementById("video").value="";
+
+  showFilms();
+
+  alert("ፊልሙ ተጨምሯል ✅");
+}
+
+showFilms();
 
 </script>
 
