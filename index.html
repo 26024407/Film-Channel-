@@ -600,8 +600,11 @@ function closePlayer(){
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
 
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
 const SUPABASE_URL = "https://xzywruwngrlwhfbezymi.supabase.co";
 
 const SUPABASE_KEY = "sb_publishable_vvibgjr4pj4OPpcHdI8zUA_j_oBBaCI";
@@ -624,9 +627,103 @@ let films = [
   }
 ];
 
+let selectedFilmIndex = null;
+let selectedMethod = null;
+
+function showFilms(list = films) {
+  const box = document.getElementById("films");
+  box.innerHTML = "";
+
+  list.forEach((film, index) => {
+    box.innerHTML += `
+      <div class="film">
+        <img src="${film.image}" alt="${film.title}">
+        <div class="film-info">
+          <h3>${film.title}</h3>
+          <div class="meta">🎬 Film Channel</div>
+          <button class="watch" onclick="openPayment(${index})">
+            🔒 ለማየት ክፈል
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function openPayment(index) {
+  selectedFilmIndex = index;
+  selectedMethod = null;
+
+  document.getElementById("selectedFilm").innerText =
+    "🎬 " + films[index].title;
+
+  document.getElementById("paymentModal").style.display = "block";
+}
+
+function selectMethod(method) {
+  selectedMethod = method;
+
+  if (method === "CBE") {
+    document.getElementById("accountInfo").innerHTML =
+      "🏦 CBE<br><br><strong>1000341152864</strong><br><br>💰 20 ብር";
+  }
+
+  if (method === "Telebirr") {
+    document.getElementById("accountInfo").innerHTML =
+      "📱 Telebirr<br><br><strong>+251926024407</strong><br><br>💰 15 ብር";
+  }
+}
+
+function submitPayment() {
+  const transaction =
+    document.getElementById("transaction").value.trim();
+
+  if (!selectedMethod) {
+    alert("CBE ወይም Telebirr ይምረጡ");
+    return;
+  }
+
+  if (!transaction) {
+    alert("Transaction ID ያስገቡ");
+    return;
+  }
+
+  alert("ክፍያዎ ተልኳል ✅");
+  closePayment();
+}
+
+function closePayment() {
+  document.getElementById("paymentModal").style.display = "none";
+}
+
+function searchFilms() {
+  const text =
+    document.getElementById("search").value.toLowerCase();
+
+  showFilms(
+    films.filter(f =>
+      f.title.toLowerCase().includes(text)
+    )
+  );
+}
+
+function watchFilm(index) {
+  const film = films[index];
+
+  document.getElementById("videoFrame").src =
+    "https://www.youtube.com/embed/" +
+    film.video +
+    "?autoplay=1";
+
+  document.getElementById("player").style.display = "block";
+}
+
+function closePlayer() {
+  document.getElementById("videoFrame").src = "";
+  document.getElementById("player").style.display = "none";
+}
+
 showFilms();
-
 </script>
-
 </body>
 </html>
